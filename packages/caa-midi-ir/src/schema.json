@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/composer-resonance/composer-resonance/schemas/midi-ir.json",
+  "title": "Composer 共鸣 MIDI IR",
+  "description": "Intermediate representation for exchanging musical content with external tools (MCP, import/export).",
+  "type": "object",
+  "required": ["version", "tracks"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "tempo": { "type": "number", "minimum": 1, "maximum": 1000, "default": 120 },
+    "ticksPerBeat": { "type": "integer", "minimum": 1, "default": 480 },
+    "timeSignature": {
+      "type": "object",
+      "required": ["numerator", "denominator"],
+      "properties": {
+        "numerator": { "type": "integer", "minimum": 1 },
+        "denominator": { "type": "integer", "enum": [1, 2, 4, 8, 16] }
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "channel", "program", "notes"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "channel": { "type": "integer", "minimum": 0, "maximum": 15 },
+          "program": { "type": "integer", "minimum": 0, "maximum": 127 },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["midi", "startTick", "duration", "velocity"],
+              "properties": {
+                "midi": { "type": "integer", "minimum": 0, "maximum": 127 },
+                "startTick": { "type": "integer", "minimum": 0 },
+                "duration": { "type": "integer", "minimum": 1 },
+                "velocity": { "type": "integer", "minimum": 1, "maximum": 127 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

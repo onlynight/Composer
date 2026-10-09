@@ -1,0 +1,27 @@
+{
+  "name": "@caa/agent",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Agent Runtime for Composer 共鸣 — LLM client adapters, tool dispatch, prompt modes, guardrails.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run --root ../../",
+    "test:watch": "vitest --root ../../",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@caa/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.4"
+  }
+}

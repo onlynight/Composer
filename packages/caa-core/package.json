@@ -1,0 +1,24 @@
+{
+  "name": "@caa/core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Pure TypeScript core logic for Composer 共鸣 — no Electron dependencies.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run --root ../../",
+    "test:watch": "vitest --root ../../",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.4"
+  }
+}

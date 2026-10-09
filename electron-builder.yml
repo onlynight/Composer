@@ -1,0 +1,48 @@
+appId: com.composerresonance.app
+productName: Composer 共鸣
+copyright: Copyright 2025-2026 Composer 共鸣 Contributors
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - package.json
+  - '!**/*.map'
+
+asar: true
+compression: normal
+
+mac:
+  category: public.app-category.music
+  target:
+    - dmg
+    - zip
+  icon: build/icon.icns
+  darkModeSupport: true
+
+win:
+  target:
+    - nsis
+    - portable
+  icon: build/icon.ico
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: build/icon.png
+  category: AudioVideo
+  maintainer: Composer 共鸣 Contributors
+
+publish:
+  provider: github
+  owner: composer-resonance
+  repo: composer-resonance
