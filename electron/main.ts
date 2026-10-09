@@ -17,8 +17,10 @@ import { dirname, join } from 'node:path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
-const DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL ?? 'http://localhost:5173';
+// Dev server URL is injected by `pnpm dev` (via cross-env VITE_DEV_SERVER_URL=...).
+// When absent we assume production and load the built renderer from disk.
+const DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
+const isDev = !!DEV_SERVER_URL;
 
 let mainWindow: BrowserWindow | null = null;
 
