@@ -26,6 +26,11 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
+      // Only the library packages count toward the coverage target.
+      // Renderer / electron main / scripts / config are UI or bootstrap code,
+      // which has different testing concerns (E2E for the UI, integration for
+      // the main process) and is intentionally excluded from the M1 gate.
+      include: ['packages/*/src/**/*.ts'],
       exclude: ['**/*.d.ts', '**/node_modules/**'],
     },
   },

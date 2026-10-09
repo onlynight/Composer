@@ -48,6 +48,37 @@ describe('midi-ir validator', () => {
     });
     expect(r.ok).toBe(false);
   });
+
+  it('rejects a missing version', () => {
+    const r = validateMidiIR({ tracks: [] });
+    expect(r.ok).toBe(false);
+    expect(r.errors.some((e) => e.path === '/version')).toBe(true);
+  });
+
+  it('rejects a non-array tracks field', () => {
+    const r = validateMidiIR({ version: '1.0.0', tracks: 'nope' } as never);
+    expect(r.ok).toBe(false);
+  });
+
+  it('rejects velocity out of range', () => {
+    const r = validateMidiIR({
+      version: '1.0.0',
+      tracks: [
+        { id: 't', name: 'Piano', channel: 0, program: 0, notes: [{ midi: 60, startTick: 0, duration: 480, velocity: 200 }] },
+      ],
+    });
+    expect(r.ok).toBe(false);
+  });
+
+  it('rejects negative startTick or non-positive duration', () => {
+    const r = validateMidiIR({
+      version: '1.0.0',
+      tracks: [
+        { id: 't', name: 'Piano', channel: 0, program: 0, notes: [{ midi: 60, startTick: -1, duration: 480, velocity: 100 }] },
+      ],
+    });
+    expect(r.ok).toBe(false);
+  });
 });
 
 describe('project -> midi-ir conversion', () => {

@@ -3,7 +3,8 @@
  *
  * Single source of truth for the entire editor. All edits flow through
  * `dispatch()`, which runs the Command, records it for undo/redo, and
- * notifies subscribers.
+ * notifies subscribers. Optional BroadcastChannel sync can mirror commands
+ * across multiple windows.
  */
 
 import { create } from 'zustand';
@@ -18,23 +19,32 @@ import {
   UNDO_STACK_MAX,
 } from '@caa/core';
 
+import type { SyncHandle } from './broadcast-sync.js';
+
+export * from './broadcast-sync.js';
+
 export interface ProjectStoreState {
   project: Project;
   transport: Transport;
   commandStack: { undo: Command[]; redo: Command[] };
   /** Agent-aware metadata: provenance of the most recent N edits. */
   recentCommandSources: CommandSource[];
+  /** Optional BroadcastChannel handle for cross-window sync. */
+  sync?: SyncHandle;
   dispatch: (command: Command, opts?: DispatchOptions) => void;
   dispatchBatch: (commands: Command[], opts?: DispatchOptions) => void;
   undo: () => void;
   redo: () => void;
   setProject: (project: Project) => void;
   setTransport: (patch: Partial<Transport>) => void;
+  attachSync: (handle: SyncHandle | null) => void;
 }
 
 export interface DispatchOptions {
   /** Suppress undo/redo entry (used for system-driven changes). */
   skipHistory?: boolean;
+  /** Don't broadcast to other windows (used for replaying incoming messages). */
+  skipSync?: boolean;
 }
 
 const initialProject = createProject({ name: 'Untitled Project' });
@@ -44,6 +54,7 @@ export const useProjectStore = create<ProjectStoreState>((set, get) => ({
   transport: { ...DEFAULT_TRANSPORT },
   commandStack: { undo: [], redo: [] },
   recentCommandSources: [],
+  sync: undefined,
 
   dispatch: (command, opts) => {
     const state = get();
@@ -60,6 +71,9 @@ export const useProjectStore = create<ProjectStoreState>((set, get) => ({
         ? state.recentCommandSources
         : [...state.recentCommandSources.slice(-19), command.source],
     });
+    if (!opts?.skipSync && state.sync) {
+      state.sync.sendCommand(command);
+    }
   },
 
   dispatchBatch: (commands, opts) => {
@@ -105,6 +119,8 @@ export const useProjectStore = create<ProjectStoreState>((set, get) => ({
     set({ project, commandStack: { undo: [], redo: [] } }),
 
   setTransport: (patch) => set((state) => ({ transport: { ...state.transport, ...patch } })),
+
+  attachSync: (handle) => set({ sync: handle ?? undefined }),
 }));
 
 /** Exported for tests / non-React callers. */

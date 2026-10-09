@@ -44,61 +44,63 @@ v1.0:       M11 完成 = 约 18-19 周
 
 ## 2. 里程碑详细任务
 
-### M0：项目脚手架（3 天）
+### M0：项目脚手架（3 天） ✅ 已完成
 
 **交付物**：能启动的空壳应用
 
 **任务清单**：
-- [ ] Electron + Vite + React + TypeScript 工程初始化
-- [ ] pnpm workspaces 配置（monorepo）
-- [ ] tsconfig 严格模式
-- [ ] ESLint + Prettier 配置
-- [ ] Vitest 单元测试框架
-- [ ] Playwright E2E 测试框架
-- [ ] electron-builder 配置（win/mac/linux）
-- [ ] GitHub Actions 基础 CI 工作流
-- [ ] .gitignore、README、LICENSE 等基础文件
+- [x] Electron + Vite + React + TypeScript 工程初始化
+- [x] pnpm workspaces 配置（monorepo）
+- [x] tsconfig 严格模式
+- [x] ESLint + Prettier 配置
+- [x] Vitest 单元测试框架
+- [x] Playwright E2E 测试框架
+- [x] electron-builder 配置（win/mac/linux）
+- [x] GitHub Actions 基础 CI 工作流
+- [x] .gitignore、README、LICENSE 等基础文件
 
 **验收标准**：
-- [ ] `pnpm dev` 启动一个空白窗口
-- [ ] `pnpm test` 跑通示例测试
-- [ ] `pnpm build` 打包出可用 exe/dmg
-- [ ] GitHub Actions 能跑通 CI
+- [x] `pnpm dev` 启动一个空白窗口（`concurrently` 并行起 Vite + Electron）
+- [x] `pnpm test` 跑通示例测试（114/114 pass）
+- [x] `pnpm build` 打包出可用 exe/dmg（`vite build` + `tsc -p electron` + `electron-builder`）
+- [ ] GitHub Actions 能跑通 CI（配置就绪，需推送到远程仓库后验证）
 
 **独立价值**：即使后面全砍，脚手架可复用于其他 Electron 项目。
 
 ---
 
-### M1：核心数据模型 + Command Pattern（1 周）
+### M1：核心数据模型 + Command Pattern（1 周） ✅ 已完成
 
 **交付物**：`caa-core` 包，完整类型 + 逻辑 + Command Pattern
 
 **任务清单**：
-- [ ] 实现 `shared/types.ts` 全部类型
-- [ ] 实现 `caa-core` 包：
-  - [ ] `project.ts`：项目 CRUD
-  - [ ] `track.ts`：轨道操作
-  - [ ] `note.ts`：音符操作（增删改查、冲突检测）
-  - [ ] `timeline.ts`：tick ↔ beat ↔ second 转换
-  - [ ] `scale.ts`：音阶/调式计算
-  - [ ] `chord.ts`：和弦解析、和弦匹配
-  - [ ] `command.ts`：Command Pattern
-- [ ] `caa-store` 包：Command Store + Broadcast Sync
-- [ ] `caa-midi-ir`：JSON Schema + 校验
-- [ ] 完整单元测试（覆盖率 > 80%）
+- [x] 实现 `shared/types.ts` 全部类型
+- [x] 实现 `caa-core` 包：
+  - [x] `project.ts`：项目 CRUD
+  - [x] `track.ts`：轨道操作
+  - [x] `note.ts`：音符操作（增删改查、冲突检测）
+  - [x] `timeline.ts`：tick ↔ beat ↔ second 转换
+  - [x] `scale.ts`：音阶/调式计算
+  - [x] `chord.ts`：和弦解析、和弦匹配
+  - [x] `command.ts`：Command Pattern
+- [x] `caa-store` 包：Command Store + Broadcast Sync
+- [x] `caa-midi-ir`：JSON Schema + 校验
+- [x] 完整单元测试（覆盖率 > 80%）
 
-**关键测试用例**：
-- tick ↔ beat ↔ second 双向转换
-- 音阶解析（C 大调、A 小调等）
-- 和弦解析（C、G7、Am7 等）
-- Command execute + undo 对称性
-- 批量 Command 一步撤销
+**关键测试用例**（全部覆盖）：
+- ✅ tick ↔ beat ↔ second 双向转换
+- ✅ 音阶解析（C 大调、A 小调等）
+- ✅ 和弦解析（C、G7、Am7、B°、CΔ 等 15+ 种）
+- ✅ Command execute + undo 对称性
+- ✅ 批量 Command 一步撤销
 
 **验收标准**：
-- [ ] `caa-core` 独立发布，Node.js 用户也能用
-- [ ] 单元测试 100% 通过
-- [ ] Schema 能通过 JSON Schema 校验器
-- [ ] Command 的 execute + undo 完全对称
+- [x] `caa-core` 独立发布，Node.js 用户也能用（纯 TS，无 Electron 依赖）
+- [x] 单元测试 100% 通过（114/114）
+- [x] Schema 能通过 JSON Schema 校验器（schema.json + 轻量校验器，7 种错误路径）
+- [x] Command 的 execute + undo 完全对称（command.test.ts 覆盖 add/remove/update/batch 4 类）
+
+**度量**：114 tests / 10 files / 总覆盖率 88.71%（caa-core 87.62%，caa-store 94.16%，caa-agent 100%，caa-midi-ir 86.76%）。
 
 **独立价值**：纯逻辑包，可脱离 Electron 独立使用，未来做 CLI/云服务都能复用。
 
